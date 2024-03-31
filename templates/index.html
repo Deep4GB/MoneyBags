@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Predictor Features</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Include Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #ffffff;
+            color: #333333;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .feature-card {
+            background-color: #f7f7f7;
+            border: 1px solid #dddddd;
+            transition: box-shadow 0.3s ease-in-out, border-color 0.3s ease-in-out;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-color: #cccccc;
+            transform: translateY(-2px);
+        }
+
+        body.dark-mode {
+            background-color: #1f2937;
+            color: #ffffff;
+        }
+
+        body.dark-mode .feature-card {
+            background-color: #374151;
+            border: 1px solid #4a5568;
+        }
+
+        body.dark-mode .feature-card:hover {
+            box-shadow: 0 4px 6px -1px rgba(255, 255, 255, 0.1), 0 2px 4px -1px rgba(255, 255, 255, 0.06);
+            border-color: #4a5568;
+        }
+
+        .toggle-button {
+            border: 1px solid rgba(204, 204, 204, 0.358);
+            padding: 3px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .fa-sun,
+        .fa-moon {
+            font-size: 24px;
+            padding: 5px;
+            transition: color 0.3s ease-in-out;
+        }
+
+        body:not(.dark-mode) input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0);
+            transform: scaleY(1.2);
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .toggle-button {
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body class="flex flex-col items-center justify-center min-h-screen">
+    <div class="container mx-auto py-10 mt-4">
+        <!-- Dark Mode / Light Mode toggle button -->
+        <div class="flex justify-end mb-4">
+            <button id="darkModeToggle" class="toggle-button focus:outline-none p-2">
+                <i id="darkIcon" class="far fa-moon text-gray-500 hover:text-yellow-500 text-sm"></i>
+            </button>
+        </div>
+
+        <h1 class="text-3xl font-semibold mb-6 text-center">Stock Predictor Features</h1>
+
+        <div class="grid xs:grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10 sm:mt-20 mr-4 ml-4">
+            <!-- Feature Card: Price Prediction -->
+            <a href="/stock"
+                class="feature-card border rounded-md p-6 flex flex-col items-center justify-center text-center animate__animated animate__fadeIn animate__faster transition duration-300 ease-in-out">
+                <i class="fas fa-chart-line text-3xl mb-3"></i>
+                <h2 class="text-lg font-semibold mb-3">Price Prediction</h2>
+                <p>Predict future stock prices based on historical data and machine learning algorithms.</p>
+            </a>
+
+            <!-- Feature Card: Sentiment Analysis -->
+            <a href="/sentiment"
+                class="feature-card border rounded-md p-6 flex flex-col items-center justify-center text-center animate__animated animate__fadeIn animate__faster transition duration-300 ease-in-out">
+                <i class="fas fa-comment-dots text-3xl mb-3"></i>
+                <h2 class="text-lg font-semibold mb-3">Sentiment Analysis</h2>
+                <p>Analyze market sentiment from news and social media for stocks.</p>
+            </a>
+
+            
+
+            <!-- Feature Card: Portfolio Analysis & Optimization -->
+            <a href="/portfolio"
+            class="feature-card border rounded-md p-6 flex flex-col items-center justify-center text-center animate__animated animate__fadeIn animate__faster transition duration-300 ease-in-out">
+            <i class="fas fa-chart-pie text-3xl mb-3"></i>
+                <h2 class="text-lg font-semibold mb-3">Portfolio Analysis & Optimization</h2>
+                <p>Evaluate portfolio performance and optimize asset allocation.</p>
+            </a>
+
+            <!-- Feature Card: News & Social Media Integration -->
+            <a href="#"
+                class="feature-card border rounded-md p-6 flex flex-col items-center justify-center text-center animate__animated animate__fadeIn animate__faster transition duration-300 ease-in-out"
+                onclick="showPopup(event, 'news-social-media')">
+                <i class="fas fa-newspaper text-3xl mb-3"></i>
+                <h2 class="text-lg font-semibold mb-3">News & Social Media Integration</h2>
+                <p>Incorporate sentiment analysis from news and social media into stock predictions.</p>
+            </a>
+        </div>
+    </div>
+
+    <!-- Popup Modal -->
+    <div id="popupModal" class="fixed top-0 left-0 z-50 w-full h-full flex justify-center items-center hidden">
+        <div class="bg-gray-800 border border-gray-500 p-8 rounded-md text-white max-w-sm flex flex-col items-center">
+            <p class="mb-4">This feature is under development.</p>
+            <button onclick="hidePopup()"
+                class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md focus:outline-none">Close</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-transparent py-4 mt-auto">
+        <div class="container mx-auto text-center">
+            <a href="https://deeppatel.tech" target="_blank" class="text-gray-600">Built by Deep Patel</a>
+            <p class="text-gray-600">
+                <a href="/how-it-works" class="text-blue-500 hover:underline">Learn how it works</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Function to show the popup modal
+        function showPopup(event, feature) {
+            event.preventDefault();
+            document.getElementById('popupModal').classList.remove('hidden');
+        }
+
+        // Function to hide the popup modal
+        function hidePopup() {
+            document.getElementById('popupModal').classList.add('hidden');
+        }
+
+        const darkModeButton = document.getElementById('darkModeToggle');
+        const darkIcon = document.getElementById('darkIcon');
+        const body = document.body;
+
+        // Function to set the theme based on user preference
+        const setTheme = (mode) => {
+            if (mode === 'dark') {
+                body.classList.add('dark-mode');
+                darkIcon.classList.add('fa-sun', 'text-yellow-500');
+                darkIcon.classList.remove('fa-moon', 'text-gray-500');
+            } else {
+                body.classList.remove('dark-mode');
+                darkIcon.classList.add('fa-moon', 'text-gray-500');
+                darkIcon.classList.remove('fa-sun', 'text-yellow-500');
+            }
+        };
+
+        // Check if the user's preference is already set in localStorage
+        const userPreference = localStorage.getItem('theme');
+        if (userPreference) {
+            setTheme(userPreference);
+        }
+
+        darkModeButton.addEventListener('click', () => {
+            // Toggle dark mode and store the user's preference in localStorage
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                darkIcon.classList.add('fa-sun', 'text-yellow-500');
+                darkIcon.classList.remove('fa-moon', 'text-gray-500');
+            } else {
+                localStorage.setItem('theme', 'light');
+                darkIcon.classList.remove('fa-sun', 'text-yellow-500');
+                darkIcon.classList.add('fa-moon', 'text-gray-500');
+            }
+        });
+    </script>
+
+</body>
+
+</html>
