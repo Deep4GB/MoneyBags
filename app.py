@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import warnings
 import plotly.graph_objects as go
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 app = Flask(__name__)
 
@@ -154,10 +155,10 @@ def prediction():
             if len(processed_data) > 0:  # Check if processed_data contains samples
                 try:
                     # Train the LSTM model
-                    lstm_model, _, _, scaler = train_model(processed_data)
+                    lstm_model, X_test_lstm, y_test_lstm, scaler_lstm = train_model(processed_data)
 
                     # Train the Random Forest model
-                    rf_model, _, _, _ = train_model(processed_data)
+                    rf_model, X_test_rf, y_test_rf, scaler_rf = train_model(processed_data)
 
                     # Get the latest data for prediction
                     latest_data = processed_data.iloc[-1]
@@ -174,11 +175,11 @@ def prediction():
 
                     # Predict using LSTM
                     lstm_next_price = predict_price(
-                        lstm_model, latest_data.name, scaler, open_price, high_price, low_price, volume)
+                        lstm_model, latest_data.name, scaler_lstm, open_price, high_price, low_price, volume)
 
                     # Predict using Random Forest
                     rf_next_price = predict_price(
-                        rf_model, latest_data.name, scaler, open_price, high_price, low_price, volume)
+                        rf_model, latest_data.name, scaler_rf, open_price, high_price, low_price, volume)
 
                     # Stack predictions
                     stacked_price = (lstm_next_price + rf_next_price) / 2
@@ -187,6 +188,29 @@ def prediction():
                     prediction_text = f"Stacked predicted closing price: ${stacked_price:.2f}"
 
                     chart_data = {"x": [1, 2, 3], "y": [10, 20, 30]}
+
+                    # Evaluate models
+                    # Evaluate LSTM model
+                    lstm_predictions = lstm_model.predict(X_test_lstm)
+                    lstm_mae = mean_absolute_error(y_test_lstm, lstm_predictions)
+                    lstm_mse = mean_squared_error(y_test_lstm, lstm_predictions)
+                    lstm_r2 = r2_score(y_test_lstm, lstm_predictions)
+
+                    print("LSTM Model Evaluation:")
+                    print(f"Mean Absolute Error (MAE): {lstm_mae:.2f}")
+                    print(f"Mean Squared Error (MSE): {lstm_mse:.2f}")
+                    print(f"R-squared (R^2) Score: {lstm_r2:.2f}")
+
+                    # Evaluate Random Forest model
+                    rf_predictions = rf_model.predict(X_test_rf)
+                    rf_mae = mean_absolute_error(y_test_rf, rf_predictions)
+                    rf_mse = mean_squared_error(y_test_rf, rf_predictions)
+                    rf_r2 = r2_score(y_test_rf, rf_predictions)
+
+                    print("\nRandom Forest Model Evaluation:")
+                    print(f"Mean Absolute Error (MAE): {rf_mae:.2f}")
+                    print(f"Mean Squared Error (MSE): {rf_mse:.2f}")
+                    print(f"R-squared (R^2) Score: {rf_r2:.2f}")
 
                 except Exception as e:
                     print(f"Error during prediction: {e}")
@@ -201,7 +225,6 @@ def prediction():
                     current_price = price_data['Close'].iloc[-1]
                     current_price = round(current_price, 2)
                     current_price = "{:.2f}".format(current_price)
-
 
     return render_template('prediction.html', symbol=symbol, current_price=current_price, prediction_text=prediction_text, chart_data=chart_data)
 
