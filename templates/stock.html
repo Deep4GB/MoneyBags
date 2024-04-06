@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="pageTitle">Stock Predictor</title>
+    <!-- Include Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        #pageTitle {
+            text-align: center;
+            justify-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Define CSS for dark mode */
+        .dark-mode {
+            background-color: #1f2937;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+        }
+
+        /* Styles for input fields in dark mode */
+        .dark-mode input[type="text"],
+        .dark-mode input[type="date"],
+        .dark-mode input[type="number"] {
+            background-color: #374151;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Styles for input fields in light mode */
+        body:not(.dark-mode) input[type="text"],
+        body:not(.dark-mode) input[type="date"],
+        body:not(.dark-mode) input[type="number"] {
+            background-color: white;
+            color: #374151;
+            /* Text color for light mode */
+            border: 1px solid #ccc8c8;
+            /* Dark border color for light mode */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Styles for the toggle button */
+        .toggle-button {
+            border: 1px solid #ccc;
+            padding: 3px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* Styles for icons */
+        .fa-sun,
+        .fa-moon {
+            font-size: 24px;
+            padding: 5px;
+            transition: color 0.3s ease-in-out;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 640px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .toggle-button {
+                padding: 5px;
+            }
+        }
+
+        /* Styles for scrollable date input */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            transform: scaleY(1.2);
+        }
+
+        body:not(.dark-mode) input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0);
+            /* Set to invert(0) for light mode */
+            transform: scaleY(1.2);
+        }
+    </style>
+</head>
+
+<body class="flex flex-col min-h-screen bg-gray-200">
+    <div class="container mx-auto py-10 mt-10">
+        <h1 class="text-3xl font-semibold mb-4 text-center text-center mt-10">Stock Predictor</h1>
+        <form action="/predict" method="post" class="max-w-sm mx-auto">
+            <div class="mb-4">
+                <label for="symbol" class="block text-sm font-semibold mb-1 mt-10">Stock Symbol:</label>
+                <input type="text" name="symbol" id="symbol" placeholder="Enter Stock Symbol (e.g., AAPL)"
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"
+                    autocomplete="off" spellcheck="false" required>
+            </div>
+            <div class="mb-4">
+                <label for="start_date" class="block text-sm font-semibold mb-1">Start Date:</label>
+                <input type="date" name="start_date" id="start_date"
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" min="1980-01-01"
+                    value="1990-01-01" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="end_date" class="block text-sm font-semibold mb-1">End Date:</label>
+                <input type="date" name="end_date" id="end_date"
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+            </div>
+            <div class="mb-4">
+                <label for="ma_window" class="block text-sm font-semibold mb-1">Moving Average Window:</label>
+                <input type="number" name="ma_window" id="ma_window" min="1" max="50" placeholder="1 - 50"
+                    class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+            </div>
+            <div class="flex justify-center space-x-4">
+                <button type="submit"
+                    class="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 mt-2 rounded-md focus:outline-none">Predict</button>
+                <button type="reset"
+                    class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 mt-2 rounded-md focus:outline-none">Reset</button>
+            </div>
+        </form>
+        <!-- Arrow icon for back to home -->
+        <div class="fixed bottom-0 right-0 mb-4 mr-4">
+            <a href="/" class="text-blue-500 hover:text-blue-700">
+                <i class="fas fa-arrow-left text-xl"></i>
+            </a>
+        </div>
+
+    </div>
+
+
+    <script>
+        const darkModeButton = document.getElementById('darkModeToggle');
+        const darkIcon = document.getElementById('darkIcon');
+        const body = document.body;
+
+        // Function to set the theme based on user preference
+        const setTheme = (mode) => {
+            if (mode === 'dark') {
+                body.classList.add('dark-mode');
+                darkIcon.classList.add('fa-sun', 'text-yellow-500');
+                darkIcon.classList.remove('fa-moon', 'text-gray-500');
+            } else {
+                body.classList.remove('dark-mode');
+                darkIcon.classList.add('fa-moon', 'text-gray-500');
+                darkIcon.classList.remove('fa-sun', 'text-yellow-500');
+            }
+        };
+
+        // Check if the user's preference is already set in localStorage
+        const userPreference = localStorage.getItem('theme');
+        if (userPreference) {
+            setTheme(userPreference);
+        }
+
+        darkModeButton.addEventListener('click', () => {
+            // Toggle dark mode and store the user's preference in localStorage
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                darkIcon.classList.add('fa-sun', 'text-yellow-500');
+                darkIcon.classList.remove('fa-moon', 'text-gray-500');
+            } else {
+                localStorage.setItem('theme', 'light');
+                darkIcon.classList.remove('fa-sun', 'text-yellow-500');
+                darkIcon.classList.add('fa-moon', 'text-gray-500');
+            }
+        });
+    </script>
+    <script>
+        const fetchCurrentPrice = async () => {
+            const symbolInput = document.getElementById('symbol');
+            const tickerSymbol = symbolInput.value;
+    
+            const response = await fetch(`/get_stock_price`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `tickerSymbol=${tickerSymbol}`,
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                const currentPrice = parseFloat(data.currentPrice).toFixed(2);
+                // Pass the current price to the prediction page using URL parameters
+                window.location.href = `/predict?symbol=${tickerSymbol}&price=${currentPrice}`;
+            } else {
+                console.error('Failed to fetch current price');
+            }
+        };
+    </script>
+    
+</body>
+
+</html>

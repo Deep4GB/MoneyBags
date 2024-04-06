@@ -10,6 +10,7 @@
     <!-- Include Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <style>
+        /* Base styles for light mode */
         body {
             background-color: #ffffff;
             color: #333333;
@@ -30,6 +31,7 @@
             transform: translateY(-2px);
         }
 
+        /* Dark mode styles */
         body.dark-mode {
             background-color: #1f2937;
             color: #ffffff;
@@ -45,6 +47,7 @@
             border-color: #4a5568;
         }
 
+        /* Toggle button styles */
         .toggle-button {
             border: 1px solid rgba(204, 204, 204, 0.358);
             padding: 3px;
@@ -59,11 +62,13 @@
             transition: color 0.3s ease-in-out;
         }
 
+        /* Additional styles for dark mode */
         body:not(.dark-mode) input[type="date"]::-webkit-calendar-picker-indicator {
             filter: invert(0);
             transform: scaleY(1.2);
         }
 
+        /* Responsive styles */
         @media (max-width: 640px) {
             .container {
                 padding: 0 20px;
@@ -144,6 +149,7 @@
         </div>
     </footer>
 
+    <!-- JavaScript to enable dark/light mode toggle -->
     <script>
         // Function to show the popup modal
         function showPopup(event, feature) {

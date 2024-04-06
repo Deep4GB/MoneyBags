@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How It Works</title>
+    <!-- Include Tailwind CSS -->
+    
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Linen-style background and font style */
+        body {
+            background-image: linear-gradient( rgba(230, 213, 184, 0.4) 100%, rgba(255, 255, 255, 0.5) 50%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Additional styles for animations */
+        .fade-enter-active,
+        .fade-leave-active {
+            transition: opacity 0.5s;
+        }
+
+        .fade-enter,
+        .fade-leave-to {
+            opacity: 0;
+        }
+    </style>
+</head>
+
+<body class="flex flex-col items-center justify-center min-h-screen">
+    <div class="container mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        <h1 class="text-3xl font-semibold mb-6 text-center">How It Works</h1>
+
+        <div class="max-w-2xl mx-auto">
+            <p class="text-lg mb-4">
+                Welcome to the explanation of our Stock Predictor! This page will detail the various steps and processes involved in the functionality of our tool.
+            </p>
+
+            <p class="text-lg mb-4">
+                The Stock Predictor utilizes historical stock data, machine learning algorithms, and predictive analysis to forecast future stock prices.
+            </p>
+
+            <p class="text-lg mb-4">
+                Our tool fetches historical stock data from Yahoo Finance, preprocesses the data, trains a machine learning model using RandomForestRegressor, and predicts future stock prices based on the learned patterns.
+            </p>
+
+            <p class="text-lg mb-4">
+                The prediction is based on various features such as opening price, high price, low price, volume, and moving averages of the stock data.
+            </p>
+
+            <p class="text-lg mb-4">
+                For a better understanding, we have also included various visualization techniques using Plotly and Matplotlib to help comprehend the process more intuitively.
+            </p>
+
+            <p class="text-md mb-4 flex justify-center">
+                <a href="/" class="inline-block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105">Back to Home</a>
+            </p>
+        </div>
+    </div>
+</body>
+
+<script type="module" src="https://unpkg.com/@splinetool/viewer@1.0.16/build/spline-viewer.js"></script>
+<spline-viewer url="https://prod.spline.design/eQTdSsBKOeqVrmME/scene.splinecode"></spline-viewer>
+</html>
