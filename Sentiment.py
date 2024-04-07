@@ -37,7 +37,7 @@ def analyze_sentiment(news_articles):
     
     return average_sentiment
 
-def main():
+def sentiment():
     symbol = input("Enter the ticker symbol of the stock you want to analyze: ").upper()
     
     news_articles = fetch_news(symbol)
@@ -72,4 +72,4 @@ def main():
         print("No news articles found for the provided symbol.")
 
 if __name__ == "__main__":
-    main()
+    sentiment()

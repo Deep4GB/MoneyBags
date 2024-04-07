@@ -1,3 +1,4 @@
+from textblob import TextBlob
 import requests
 from flask import Flask, jsonify, render_template, request
 from datetime import datetime, timedelta
@@ -101,9 +102,60 @@ def stock():
 def portfolio():
     return render_template('portfolio.html')
 
+def fetch_news(symbol):
+    api_key = '0W4bW1G55N6q_a4lEauU960Buqr9WTQy'
+    url = f'https://api.polygon.io/v2/reference/news?ticker={symbol}&apiKey={api_key}'
+    
+    try:
+        response = requests.get(url)
+        news_data = response.json()['results']
+        return news_data
+    except Exception as e:
+        print(f"Error fetching news data: {e}")
+        return []
+
+def analyze_sentiment(news_articles):
+    sentiment_scores = []
+    
+    for article in news_articles:
+        title = article['title']
+        description = article['description']
+        
+        # Concatenate title and description for sentiment analysis
+        text = f"{title}. {description}"
+        
+        # Perform sentiment analysis using TextBlob
+        blob = TextBlob(text)
+        sentiment_score = blob.sentiment.polarity
+        
+        sentiment_scores.append(sentiment_score)
+    
+    # Calculate average sentiment score
+    if sentiment_scores:
+        average_sentiment = sum(sentiment_scores) / len(sentiment_scores)
+    else:
+        average_sentiment = 0.0
+    
+    return average_sentiment
+
 @app.route('/sentiment')
 def sentiment():
     return render_template('sentiment.html')
+
+@app.route('/analyze_sentiment', methods=['POST'])
+def analyze_sentiment_route():
+    symbol = request.form['tickerSymbol'].upper()
+    news_articles = fetch_news(symbol)
+    if news_articles:
+        average_sentiment = analyze_sentiment(news_articles)
+        sentiment_results = {
+            'symbol': symbol,
+            'average_sentiment': average_sentiment,
+            'news_articles': news_articles
+        }
+        return render_template('sentiment.html', sentiment_results=sentiment_results)
+    else:
+        return render_template('sentiment.html', message="No news articles found for the provided symbol.")
 
 
 @app.route('/get_stock_price', methods=['POST'])

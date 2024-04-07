@@ -31,7 +31,7 @@
         }
 
         .dark-mode #tickerSymbol::placeholder {
-            color: #9ca3af;
+            color: #c1c5ca;
         }
 
         .dark-mode #tickerSymbol:focus {
@@ -86,20 +86,48 @@
 
 <body class="bg-gray-200 dark-mode:bg-gray-800 dark-mode:text-white">
     <div class="center-content">
-        <h1 class="text-3xl font-semibold mb-4">Sentiment Analysis</h1>
-        <form id="symbolForm" class="flex flex-col items-center">
-            <label for="tickerSymbol" class="text-lg font-semibold mb-2">Enter Ticker Symbol:</label>
-            <input type="text" id="tickerSymbol" name="tickerSymbol" class="border rounded-md p-2 mb-4 w-60"
-                placeholder="Symbol..." required>
-            <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md w-32">Analyze</button>
+        <h1 class="text-3xl font-semibold mb-4 mt-4">Sentiment Analysis</h1>
+        <form action="{{ url_for('analyze_sentiment_route') }}" method="POST"
+            class="flex flex-col items-center space-y-4">
+            <label for="tickerSymbol" class="text-lg font-semibold">Enter the ticker symbol of the stock you want to
+                analyze:</label>
+            <input type="text" id="tickerSymbol" name="tickerSymbol"
+                class="border rounded-md p-2 w-60 placeholder-gray-500" placeholder="Symbol..." required>
+            <button type="submit"
+                class="bg-blue-500 text-white py-2 px-4 rounded-md w-32 hover:bg-blue-600 transition duration-300 ease-in-out">Analyze
+                Sentiment</button>
         </form>
 
-        <div class="max-w-lg mx-auto mt-8">
-            <div id="newsContainer" class="bg-white dark-mode:bg-gray-700 rounded-md shadow-md p-4 mb-6">
-                <h2 class="text-lg font-semibold mb-4">Sentiment Analysis Results</h2>
-                <!-- News articles will be displayed here -->
-            </div>
+        {% if sentiment_results %}
+        <div class="max-w-lg mx-auto mt-8 bg-white dark-mode:bg-gray-700 rounded-md shadow-md p-4 mb-6">
+            <p class="sentiment-score">
+                {% if sentiment_results.average_sentiment > 0.5 %}
+                The sentiment is strongly positive.
+                {% elif sentiment_results.average_sentiment > 0 %}
+                The sentiment is slightly positive.
+                {% elif sentiment_results.average_sentiment < -0.5 %}
+                The sentiment is strongly negative.
+                {% elif sentiment_results.average_sentiment < 0 %}
+                The sentiment is slightly negative.
+                {% else %}
+                The sentiment is neutral.
+                {% endif %}
+            </p>
+            <p class="text-lg font-semibold mb-2">Average sentiment score for {{ sentiment_results.symbol }}:
+                {{ sentiment_results.average_sentiment }}</p>
+            <h2 class="text-lg font-semibold mb-2">Articles contributing to sentiment:</h2>
+            <ul class="space-y-2">
+                {% for article in sentiment_results.news_articles %}
+                <li>
+                    <p class="font-semibold">{{ article.title }}</p>
+                    <p class="text-sm text-gray-600">{{ article.description }}</p>
+                </li>
+                {% endfor %}
+            </ul>
         </div>
+        {% elif message %}
+        <p>{{ message }}</p>
+        {% endif %}
 
         <!-- Arrow icon for back to home -->
         <div class="fixed bottom-0 right-0 mb-4 mr-4">
@@ -128,49 +156,6 @@
         const userPreference = localStorage.getItem('theme');
         if (userPreference) {
             setTheme(userPreference);
-        }
-
-        // Apply the selected theme to the localStorage
-        const symbolForm = document.getElementById('symbolForm');
-        if (symbolForm) {
-            symbolForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const tickerSymbol = document.getElementById('tickerSymbol').value;
-
-                // Fetch news articles based on the entered symbol
-                fetchNewsArticles(tickerSymbol);
-            });
-        }
-
-        function fetchNewsArticles(symbol) {
-            const apiKey = 'f559e09d793245729d4affef1d073f15'; // Replace with your actual News API key
-            const currentDate = new Date().toISOString().split('T')[0];
-            const url = `https://newsapi.org/v2/everything?q=${symbol}&from=${currentDate}&sortBy=popularity&apiKey=${apiKey}`;
-
-            fetch(url)
-                .then(response => response.json())
-                .then(data => displayNewsArticles(data.articles))
-                .catch(error => console.error('Error fetching articles:', error));
-        }
-
-        function displayNewsArticles(articles) {
-            const newsContainer = document.getElementById('newsContainer');
-
-            if (articles.length === 0) {
-                newsContainer.innerHTML = '<p>No articles found.</p>';
-                return;
-            }
-
-            const articlesHTML = articles.map(article => `
-                <div class="article-container">
-                    <h3 class="article-title">${article.title}</h3>
-                    <p class="article-date">Publication Date: ${new Date(article.publishedAt).toDateString()}</p>
-                    <p class="article-description">${article.description}</p>
-                    <a href="${article.url}" target="_blank" class="read-more-link">Read more</a>
-                </div>
-            `).join('');
-
-            newsContainer.innerHTML = articlesHTML;
         }
     </script>
 </body>
