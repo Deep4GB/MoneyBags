@@ -6,53 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Portfolio</title>
     <!-- Include Tailwind CSS -->
-    <!-- Include Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
     <!-- Include Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Dark mode styles */
-        .dark-mode {
-            background-color: #1f2937;
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .dark-mode .bg-white {
-            background-color: #374151;
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .dark-mode .text-blue-500 {
-            color: #60a5fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
         /* Base styles */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Other styles */
         .container {
             max-width: 1200px;
             margin: auto;
             padding: 2rem;
         }
 
-        .card {
-            background-color: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease-in-out;
+        /* Light mode styles */
+        .bg-light-mode {
+            background-color: #f3f4f6;
+            color: #111827;
         }
 
-        .card:hover {
-            transform: translateY(-5px);
+        /* Dark mode styles */
+        .bg-dark-mode {
+            background-color: #1f2937;
+            color: white;
         }
 
         /* Table styles */
@@ -74,8 +53,8 @@
         }
 
         /* Styling for dark mode */
-        .dark-mode th,
-        .dark-mode td {
+        .bg-dark-mode th,
+        .bg-dark-mode td {
             background-color: #4b5563;
             color: white;
             font-weight: bold;
@@ -87,7 +66,8 @@
 
         /* Input styles */
         input[type='text'],
-        input[type='number'] {
+        input[type='number'],
+        input[type='date'] {
             border: 1px solid #e2e8f0;
             padding: 8px;
             /* Styling for light mode */
@@ -96,55 +76,58 @@
         }
 
         /* Styling for dark mode */
-        .dark-mode input[type='text'],
-        .dark-mode input[type='number'] {
+        .bg-dark-mode input[type='text'],
+        .bg-dark-mode input[type='number'],
+        .bg-dark-mode input[type='date'] {
             background-color: #4b5563;
             color: white;
         }
     </style>
 </head>
 
-<body class="bg-gray-100 dark-mode:bg-gray-900 dark-mode:text-white">
-    <div class="container mx-auto">
-        <h1 class="text-3xl font-semibold mb-6 text-center">Stock Portfolio</h1>
-        <div class="flex justify-between">
-            <div class="w-1/2 mr-6">
+<body>
+    <div class="container mx-auto mt-10">
+        <h1 class="text-3xl font-semibold mb-4 text-center text-center mt-10">Stock Portfolio</h1>
+        <div class="flex justify-center">
+            <div class="w-full max-w-md">
                 <p id="errorMessage" class="text-red-500 hidden">Invalid ticker symbol. Please try again.</p>
-                <form id="stockForm" class="mb-6">
-                    <div class="flex items-center mb-4">
-                        <label for="tickerSymbol" class="mr-2">Ticker Symbol:</label>
-                        <input type="text" id="tickerSymbol" class="border rounded-md p-2 focus:outline-none">
+                <form id="stockForm" class="mb-6" method="POST" action="/portfolio">
+                    <div class="flex flex-col mb-4">
+                        <label for="tickerSymbols" class="mr-2">Ticker Symbols (comma-separated):</label>
+                        <input type="text" id="tickerSymbols" name="tickerSymbols" class="border rounded-md p-2 focus:outline-none" required>
                     </div>
-                    <div class="flex items-center">
-                        <label for="stockQuantity" class="mr-2">Quantity:</label>
-                        <input type="number" id="stockQuantity" class="border rounded-md p-2 focus:outline-none">
+                    <div class="flex flex-col mb-4">
+                        <label for="startDate" class="mr-2">Start Date:</label>
+                        <input type="date" id="startDate" name="startDate" class="border rounded-md p-2 focus:outline-none" min="1980-01-01" value="1990-01-01" required>
                     </div>
-                    <button type="submit"
-                        class="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 focus:outline-none">
-                        Add Stock
-                    </button>
+                    <div class="flex flex-col mb-4">
+                        <label for="endDate" class="mr-2">End Date:</label>
+                        <input type="date" id="endDate" name="endDate" class="border rounded-md p-2 focus:outline-none" required>
+                    </div>
+                    <div class="flex flex-col mb-4">
+                        <label for="totalInvestment" class="mr-2">Total Investment:</label>
+                        <input type="number" id="totalInvestment" name="totalInvestment" class="border rounded-md p-2 focus:outline-none" required>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="mt-1 bg-blue-500 text-white py-2 px-3 rounded-md hover:bg-blue-600 focus:outline-none w-50">
+                            Calculate
+                        </button>
+                    </div>                    
                 </form>
             </div>
-            <div class="w-1/2">
-                <table id="stockTable">
-                    <thead>
-                        <tr>
-                            <th>Ticker Symbol</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            <th>Action</th> <!-- New column for delete buttons -->
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-                <p id="portfolioTotal" class="mt-4 font-semibold">Total Portfolio Value: $0.00</p>
-            </div>
-
         </div>
-        <div class="mt-8">
-            <canvas id="pieChart" width="400" height="400"></canvas>
+        <div class="w-full max-w-md mx-auto">
+            <table id="allocationTable" class="hidden">
+                <thead>
+                    <tr>
+                        <th>Ticker Symbol</th>
+                        <th>Allocation Percentage</th>
+                        <th>Allocation Amount</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
         </div>
-
         <!-- Arrow icon for back to home -->
         <div class="fixed bottom-0 right-0 mb-4 mr-4">
             <a href="/" class="text-blue-500 hover:text-blue-700">
@@ -154,192 +137,44 @@
     </div>
 
     <script>
+        const allocationTable = document.getElementById('allocationTable');
 
-        const updatePortfolioData = () => {
-            // Initialize portfolio data
-            const portfolioData = {
-                stocks: [],
-                totalValue: 0,
-            };
+        const updateAllocationTable = (data) => {
+            const tbody = allocationTable.querySelector('tbody');
+            tbody.innerHTML = '';
 
-            const stockTable = document.querySelector('#stockTable tbody');
-            const portfolioTotalElement = document.getElementById('portfolioTotal');
+            data.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.symbol}</td>
+                    <td>${(item.allocation_percentage * 100).toFixed(2)}%</td>
+                    <td>${(item.allocation_amount).toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
 
-            // Loop through rows to extract stock information
-            for (let i = 0; i < stockTable.rows.length; i++) {
-                const row = stockTable.rows[i];
-                const tickerSymbol = row.cells[0].innerText;
-                const stockQuantity = parseInt(row.cells[1].innerText);
-                const stockPrice = parseFloat(row.cells[2].innerText.replace('$', ''));
-                const totalValue = stockQuantity * stockPrice;
-
-                // Add extracted data to the portfolio
-                portfolioData.stocks.push({
-                    tickerSymbol,
-                    stockQuantity,
-                    stockPrice,
-                    totalValue,
-                });
-
-                // Calculate total portfolio value
-                portfolioData.totalValue += totalValue;
-            }
-
-            // Update the displayed total portfolio value
-            portfolioTotalElement.innerText = `Total Portfolio Value: $${portfolioData.totalValue.toFixed(2)}`;
-
-            // Store the updated portfolio data in localStorage
-            localStorage.setItem('portfolioData', JSON.stringify(portfolioData.stocks));
+            allocationTable.classList.remove('hidden');
         };
 
-        // Add event listener for delete button clicks
-        stockTable.addEventListener('click', event => {
-            if (event.target.classList.contains('deleteButton')) {
-                const index = event.target.dataset.index;
-                const rows = stockTable.getElementsByTagName('tr');
-
-                if (index < rows.length) {
-                    stockTable.deleteRow(index + 1); // Delete row (index + 1 to account for the table header)
-                    updatePortfolioData(); // Update portfolio data after deletion
-
-                    const storedPortfolioData = localStorage.getItem('portfolioData');
-                    if (storedPortfolioData) {
-                        updatePieChart(JSON.parse(storedPortfolioData)); // Update pie chart after deletion
-                    }
-                }
-            }
-        });
-        const deleteStock = (button) => {
-            const row = button.closest('tr');
-            const rowIndex = row.rowIndex;
-            const stockTable = document.querySelector('#stockTable tbody');
-
-            stockTable.deleteRow(rowIndex);
-            updatePortfolioData();
-            const storedPortfolioData = localStorage.getItem('portfolioData');
-            if (storedPortfolioData) {
-                updatePieChart(JSON.parse(storedPortfolioData));
-            }
-        };
-
-        // Update event handling for delete buttons
-        document.querySelector('#stockTable tbody').addEventListener('click', (event) => {
-            if (event.target.classList.contains('deleteButton')) {
-                deleteStock(event.target);
-            }
-        });
-
-
-
-        // Update the function loadPortfolioData to load table data from localStorage
-        const loadPortfolioData = () => {
-            const portfolioData = localStorage.getItem('portfolioData');
-            const stockTable = document.querySelector('#stockTable tbody');
-            stockTable.innerHTML = ''; // Clear table contents before loading data
-
-            if (portfolioData) {
-                const parsedPortfolioData = JSON.parse(portfolioData);
-
-                parsedPortfolioData.forEach((stock, index) => {
-                    const newRow = stockTable.insertRow();
-                    newRow.innerHTML = `
-                <td>${stock.tickerSymbol}</td>
-                <td>${stock.stockQuantity}</td>
-                <td>${stock.stockPrice ? `$${stock.stockPrice.toFixed(2)}` : 'N/A'}</td>
-                <td><button class="deleteButton" data-index="${index}">Delete</button></td>
-            `;
-                });
-
-                // Update the pie chart with the retrieved data
-                updatePieChart({ stocks: parsedPortfolioData });
-            }
-        };
-
-
-        document.addEventListener('DOMContentLoaded', loadPortfolioData);
-
-        const stockForm = document.getElementById('stockForm');
-        const pieChart = document.getElementById('pieChart').getContext('2d');
-
-        // Update event listener for form submission
-        stockForm.addEventListener('submit', async (event) => {
+        document.getElementById('stockForm').addEventListener('submit', async (event) => {
             event.preventDefault();
 
-            const tickerSymbol = document.getElementById('tickerSymbol').value.toUpperCase();
-            const stockQuantity = parseInt(document.getElementById('stockQuantity').value);
+            const formData = new FormData(event.target);
+            const tickerSymbols = formData.get('tickerSymbols');
+            const startDate = formData.get('startDate');
+            const endDate = formData.get('endDate');
+            const totalInvestment = formData.get('totalInvestment');
 
-            if (tickerSymbol && stockQuantity) {
-                const response = await fetch('/get_stock_price', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `tickerSymbol=${tickerSymbol}`,
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const price = parseFloat(data.currentPrice);
-
-                    // Update the table with the retrieved price
-                    const stockTable = document.querySelector('#stockTable tbody');
-                    const newRow = stockTable.insertRow();
-                    newRow.innerHTML = `
-                <td>${tickerSymbol}</td>
-                <td>${stockQuantity}</td>
-                <td>$${price.toFixed(2)}</td>
-            `;
-
-                    // Update the pie chart with the retrieved data
-                    const storedPortfolioData = localStorage.getItem('portfolioData');
-                    if (storedPortfolioData) {
-                        updatePieChart(JSON.parse(storedPortfolioData));
-                    }
-                } else {
-                    const errorMessage = document.getElementById('errorMessage');
-                    errorMessage.classList.remove('hidden');
-                }
-
-                document.getElementById('tickerSymbol').value = '';
-                document.getElementById('stockQuantity').value = '';
-            }
-        });
-
-
-        const updatePieChart = (portfolioData) => {
-            const pieChart = document.getElementById('pieChart').getContext('2d');
-
-            const labels = portfolioData.stocks.map(stock => stock.tickerSymbol);
-            const data = portfolioData.stocks.map(stock => stock.totalValue);
-
-            const pieChartData = {
-                labels: labels,
-                datasets: [{
-                    label: 'Portfolio Composition',
-                    data: data,
-                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF'],
-                }]
-            };
-
-            if (window.myPieChart) {
-                window.myPieChart.destroy();
-            }
-
-            window.myPieChart = new Chart(pieChart, {
-                type: 'pie',
-                data: pieChartData,
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
+            const response = await fetch('/portfolio', {
+                method: 'POST',
+                body: formData
             });
-        };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            loadPortfolioData();
-            const storedPortfolioData = localStorage.getItem('portfolioData');
-            if (storedPortfolioData) {
-                updatePieChart(JSON.parse(storedPortfolioData));
+            if (response.ok) {
+                const result = await response.json();
+                updateAllocationTable(result.allocation_results);
+            } else {
+                console.error('Error calculating portfolio');
             }
         });
 
@@ -349,11 +184,11 @@
             const resultsPage = document.querySelector('.container');
 
             if (mode === 'dark') {
-                body.classList.add('dark-mode');
-                resultsPage.classList.add('dark-mode');
+                body.classList.add('bg-dark-mode');
+                resultsPage.classList.add('bg-dark-mode');
             } else {
-                body.classList.remove('dark-mode');
-                resultsPage.classList.remove('dark-mode');
+                body.classList.remove('bg-dark-mode');
+                resultsPage.classList.remove('bg-dark-mode');
             }
         };
 
