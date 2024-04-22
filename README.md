@@ -15,15 +15,44 @@ MoneyBags is a stock market prediction application developed using Python and Fl
 
 ## Features
 
-1. **Stock Prediction**: Users can input a stock ticker symbol and select a date range to train the prediction model. The application then utilizes machine learning algorithms to predict the stock prices for the next week.
+### Stock Prediction
+- **Description**: The stock prediction feature utilizes advanced machine learning techniques including Long Short-Term Memory (LSTM), Random Forest Regression, and stacking to forecast stock prices accurately. It incorporates historical stock data, moving averages, and various technical indicators to train the prediction models.
+- **Functionality**:
+  - Users can input a stock ticker symbol and select a date range for training the prediction model.
+  - The application preprocesses the historical stock data, calculates moving averages, and extracts relevant features.
+  - Multiple machine learning algorithms, including LSTM and Random Forest Regression, are trained on the preprocessed data to predict future stock prices.
+  - Stacking techniques are employed to combine the predictions from different algorithms, enhancing the overall accuracy and reliability of the forecasts.
+  - Predicted stock prices for the next week are generated based on the trained models and displayed to the users.
+- **Benefits**:
+  - Provides users with valuable insights into potential price movements of stocks, aiding in informed decision-making for trading and investment strategies.
+  - Incorporates advanced machine learning algorithms to analyze complex patterns in historical stock data, resulting in more accurate predictions.
+  - Employs stacking techniques to leverage the strengths of multiple models, leading to improved forecasting performance.
 
-2. **Sentiment Analysis**: MoneyBags performs sentiment analysis on news articles related to the stock, providing insights into the overall sentiment (positive, negative, or neutral) surrounding the stock.
+### Sentiment Analysis
+- **Description**: The sentiment analysis feature enables users to gauge the overall sentiment surrounding a particular stock by analyzing news articles related to the stock. It utilizes the Polygon API to fetch relevant news articles and calculates sentiment scores to assess whether the sentiment is positive, negative, or neutral.
+- **Functionality**:
+  - Users input a stock ticker symbol for which they want to analyze sentiment.
+  - The application fetches news articles related to the specified stock using the Polygon API.
+  - Sentiment analysis is performed on the retrieved articles, considering both the titles and descriptions.
+  - The sentiment scores are aggregated and analyzed to determine the overall sentiment surrounding the stock.
+  - Users are provided with insights into the sentiment analysis results, along with a summary of the news articles affecting the stock sentiment.
+- **Benefits**:
+  - Offers users valuable insights into market sentiment, helping them understand the broader market perception of a particular stock.
+  - Provides a comprehensive view of sentiment trends, allowing users to make more informed decisions regarding their investments.
+  - Empowers users to stay updated with the latest news and sentiment dynamics, facilitating proactive decision-making in response to market sentiment changes.
 
-3. **Multiple Algorithms**: MoneyBags incorporates multiple machine learning algorithms such as LSTM and Random Forest regression for stock price prediction. These algorithms are trained on historical stock data to provide accurate predictions.
+### Portfolio Analysis and Optimization
+- **Description**: The portfolio analysis and optimization feature enable users to optimize their investment portfolios by allocating funds across multiple stocks based on historical performance, risk tolerance, and investment objectives. Users can input multiple ticker symbols and the desired investment amount for each stock to receive insights on the optimal allocation strategy.
+- **Functionality**:
+  - Users input multiple stock ticker symbols along with the desired investment amount for each stock.
+  - The application analyzes historical performance data for the selected stocks and calculates risk-adjusted returns, correlations, and other portfolio metrics.
+  - Based on the inputted data and user-defined constraints, the application determines the optimal allocation of funds across the selected stocks to maximize returns while minimizing risk.
+  - Users receive insights into diversification strategies, rebalancing recommendations, and portfolio performance metrics to make informed investment decisions.
+- **Benefits**:
+  - Helps users construct well-diversified portfolios tailored to their investment objectives and risk tolerance.
+  - Provides personalized investment recommendations based on quantitative analysis and optimization techniques.
+  - Empowers users to optimize their investment portfolios for better risk-adjusted returns and long-term wealth accumulation.
 
-4. **Stacking**: The application employs stacking techniques to combine the predictions from multiple algorithms, aiming to improve the overall accuracy and reliability of the predictions.
-
-5. **User-friendly Interface**: MoneyBags provides a simple and intuitive interface for users to input the stock symbol and select the training date range. The predicted stock prices and sentiment analysis results are displayed in an easy-to-understand format.
 
 ## Usage
 
@@ -52,7 +81,7 @@ MoneyBags is a stock market prediction application developed using Python and Fl
    python app.py
    ```
 
-4. Access the application in your web browser at `http://localhost:5000`.
+4. Access the application in your web browser at `http://localhost:5100`.
 
 ## Contributions
 
