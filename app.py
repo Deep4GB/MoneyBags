@@ -15,6 +15,7 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 app = Flask(__name__)
 
+
 # Suppress the specific warning
 warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -26,23 +27,21 @@ def get_stock_data(symbol, start_date, end_date):
         return stock_data
     except Exception as e:
         print(f"Error fetching stock data: {e}")
-        return pd.DataFrame()  # Return an empty DataFrame in case of an error
+        return pd.DataFrame()
 
 
 # Function to calculate Moving Average (MA) for a given window
 def calculate_moving_average(data, window):
     return data['Close'].rolling(window=window).mean()
 
+
 # Function to add Moving Average as a feature to the dataset
-
-
 def add_moving_average_feature(data, window):
     data['MA'] = calculate_moving_average(data, window)
     return data
 
+
 # Function to preprocess data for training the model
-
-
 def preprocess_data(data, ma_window):
     data = add_moving_average_feature(data, ma_window)
     data['Date'] = data.index
@@ -57,9 +56,8 @@ def preprocess_data(data, ma_window):
 
     return data
 
+
 # Function to train a Random Forest Regressor model
-
-
 def train_model(data):
     X = data[['Date', 'Open', 'High', 'Low', 'Volume', 'MA']]
     y = data['Close']
@@ -75,9 +73,8 @@ def train_model(data):
 
     return model, X_test, y_test, scaler
 
+
 # Function to predict the next day's closing price
-
-
 def predict_price(model, last_date, scaler, open_price, high_price, low_price, volume):
     next_date = last_date + timedelta(days=1)
     next_date_ordinal = next_date.toordinal()
@@ -86,6 +83,7 @@ def predict_price(model, last_date, scaler, open_price, high_price, low_price, v
         [[next_date_ordinal, open_price, high_price, low_price, volume, 0]])
     input_data_scaled = scaler.transform(input_data)
     return model.predict(input_data_scaled)[0]
+
 
 # Flask routes
 @app.route('/')
@@ -102,6 +100,7 @@ def stock():
 def portfolio():
     return render_template('portfolio.html')
 
+
 def fetch_news(symbol):
     api_key = '0W4bW1G55N6q_a4lEauU960Buqr9WTQy'
     url = f'https://api.polygon.io/v2/reference/news?ticker={symbol}&apiKey={api_key}'
@@ -113,6 +112,7 @@ def fetch_news(symbol):
     except Exception as e:
         print(f"Error fetching news data: {e}")
         return []
+
 
 def analyze_sentiment(news_articles):
     sentiment_scores = []
@@ -127,7 +127,6 @@ def analyze_sentiment(news_articles):
         # Perform sentiment analysis using TextBlob
         blob = TextBlob(text)
         sentiment_score = blob.sentiment.polarity
-        
         sentiment_scores.append(sentiment_score)
     
     # Calculate average sentiment score
@@ -138,9 +137,11 @@ def analyze_sentiment(news_articles):
     
     return average_sentiment
 
+
 @app.route('/sentiment')
 def sentiment():
     return render_template('sentiment.html')
+
 
 @app.route('/analyze_sentiment', methods=['POST'])
 def analyze_sentiment_route():
@@ -282,4 +283,4 @@ def prediction():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+     app.run(host='0.0.0.0', port=5100, debug=True)
