@@ -63,13 +63,14 @@
 
         .article-date {
             font-size: 0.875rem;
-            color: #6b7280;
+            color: #ffff;
             margin-bottom: 0.5rem;
         }
 
         .article-description {
             font-size: 0.9375rem;
             margin-bottom: 0.5rem;
+            color: #ffff;
         }
 
         .read-more-link {
@@ -84,23 +85,22 @@
     </style>
 </head>
 
-<body class="bg-gray-200 dark-mode:bg-gray-800 dark-mode:text-white">
-    <div class="center-content">
-        <h1 class="text-3xl font-semibold mb-4 mt-4">Sentiment Analysis</h1>
+<body>
+    <div class="container mx-auto mt-10">
+        <h1 class="text-3xl font-semibold mb-4 text-center text-center mt-10">Sentiment Analysis</h1>
         <form action="{{ url_for('analyze_sentiment_route') }}" method="POST"
             class="flex flex-col items-center space-y-4">
-            <label for="tickerSymbol" class="text-lg font-semibold">Enter the ticker symbol of the stock you want to
+            <label for="tickerSymbol" class="text-lg text-center text-center pl-5 pr-5">Enter the ticker symbol of the stock you want to
                 analyze:</label>
             <input type="text" id="tickerSymbol" name="tickerSymbol"
                 class="border rounded-md p-2 w-60 placeholder-gray-500" placeholder="Symbol..." required>
             <button type="submit"
-                class="bg-blue-500 text-white py-2 px-4 rounded-md w-32 hover:bg-blue-600 transition duration-300 ease-in-out">Analyze
-                Sentiment</button>
+                class="bg-blue-500 text-white py-2 px-4 rounded-md w-32 hover:bg-blue-600 transition duration-300 ease-in-out">Analyze</button>
         </form>
 
         {% if sentiment_results %}
         <div class="max-w-lg mx-auto mt-8 bg-white dark-mode:bg-gray-700 rounded-md shadow-md p-4 mb-6">
-            <p class="sentiment-score">
+            <p class="sentiment-score text-center text-center font-semibold mb-5">
                 {% if sentiment_results.average_sentiment > 0.5 %}
                 The sentiment is strongly positive.
                 {% elif sentiment_results.average_sentiment > 0 %}
@@ -139,7 +139,7 @@
 
     <script>
         const body = document.body;
-        const sentimentPage = document.querySelector('.center-content');
+        const sentimentPage = document.querySelector('.container');
 
         // Function to set the theme based on user preference
         const setTheme = (mode) => {

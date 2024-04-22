@@ -12,6 +12,7 @@ import numpy as np
 import warnings
 import plotly.graph_objects as go
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from Portfolio import calculate_portfolio_allocation
 
 app = Flask(__name__)
 
@@ -96,8 +97,22 @@ def stock():
     return render_template('stock.html')
 
 
-@app.route('/portfolio')
+@app.route('/portfolio', methods=['GET', 'POST'])
 def portfolio():
+    if request.method == 'POST':
+        ticker_symbols = request.form['tickerSymbols'].upper().split(',')
+        start_date = request.form['startDate']
+        end_date = request.form['endDate']
+        total_investment = float(request.form['totalInvestment'])
+
+        allocation_percentage, allocation_dollars = calculate_portfolio_allocation(ticker_symbols, start_date, end_date, total_investment)
+
+        if allocation_percentage is not None:
+            portfolio_results = [{'symbol': symbol, 'allocation_percentage': percentage, 'allocation_amount': allocation_dollars[symbol]} for symbol, percentage in allocation_percentage.items()]
+            return jsonify({'allocation_results': portfolio_results})
+        else:
+            return jsonify({'error': 'Unable to calculate portfolio allocation'})
+
     return render_template('portfolio.html')
 
 
